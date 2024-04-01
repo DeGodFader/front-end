@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#cc2c39">
+    <style>
+        @keyframes reduceOpacity {
+            25% {
+                opacity: 1;
+            }
+            25% {
+                opacity: 0.75;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            75% {
+                opacity: 0.25;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        .first_fade{
+            animation-name: reduceOpacity;
+            animation-duration: 2s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+    </style>
+    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path class="first_fade" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v5m0 3v0"/>
+</svg>
