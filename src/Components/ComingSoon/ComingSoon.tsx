@@ -6,8 +6,8 @@ const { Text }= Typography
 
 const ComingSoon = () => {
   return (
-    <Row justify={"center"}>
-      <img src='./svg/loading.svg' className='pulsate' style={{width: "10vw", height:"10vw"}} />
+    <Row justify={"center"} align={"middle"}>
+      <img src='/svg/loading.svg' className='pulsate' style={{width: "10vw", height:"10vw"}} />
       <Tex>Coming Soon ...</Tex>
     </Row>
   )

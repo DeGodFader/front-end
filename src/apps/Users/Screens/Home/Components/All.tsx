@@ -17,7 +17,7 @@ const All = () => {
   return (
     <>
         {loading?(
-          <Loader />
+          <PageLoader />
         ):(
           <div>
             <Categories title='Trending' movies={trending} clickable />

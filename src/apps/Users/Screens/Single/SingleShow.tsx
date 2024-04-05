@@ -96,7 +96,7 @@ const SingleShow = () => {
   return (
     <>
       {loading?(
-        <Loader />
+        <PageLoader />
       ): (
         <> 
           <div>
