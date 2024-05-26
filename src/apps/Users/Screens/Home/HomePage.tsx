@@ -7,30 +7,34 @@ import All from './Components/All'
 import Movies from './Components/Movies'
 import Series from './Components/Series'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
-import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync } from '../../State/thunks/resultThunk'
+import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync, homePageAsync } from '../../State/thunks/resultThunk'
 import { setFullArray } from '../../State/reducers/resultReducer'
+import { useNavigate } from 'react-router'
 
 const { Text, Title }= Typography
 
 const HomePage = () => {
+    const navigate= useNavigate()
     const user= LocalStorage.getCurrentUser()
     const dispatch= useAppDispatch()
-
     useEffect(()=>{
-      dispatch(fetchTrendingAsync(1)).then(_=>{
-        dispatch(fetchDiscoverAsync(1)).then(_=>{
-          dispatch(fetchPopularMoviesAsync(2)).then(_=>{
-            dispatch(setFullArray())
-          })
-        })
-      })  
-      dispatch(fetchTrendingAsync(2)).then(_=>{
-        dispatch(fetchDiscoverAsync(2)).then(_=>{
-          dispatch(fetchPopularMoviesAsync(1)).then(_=>{
-            dispatch(setFullArray())
-          })
-        })
-      })  
+      // dispatch(fetchTrendingAsync(1)).then(_=>{
+      //   dispatch(fetchDiscoverAsync(1)).then(_=>{
+      //     dispatch(fetchPopularMoviesAsync(2)).then(_=>{
+      //       dispatch(setFullArray())
+      //     })
+      //   })
+      // })  
+      // dispatch(fetchTrendingAsync(2)).then(_=>{
+      //   dispatch(fetchDiscoverAsync(2)).then(_=>{
+      //     dispatch(fetchPopularMoviesAsync(1)).then(_=>{
+      //       dispatch(setFullArray())
+      //     })
+      //   })
+      // })  
+      dispatch(homePageAsync()).then(_=>{
+        dispatch(setFullArray())
+      })
       
     },[])
 
@@ -54,14 +58,14 @@ const HomePage = () => {
   return (
     <main style={{padding:"15px 10px", overflowX:"hidden"}}>
         <Row justify={"space-between"} align={"middle"}>
-            <Space align='center'>
+            <Space align='center'  onClick={()=> navigate(`/profile`)}>
                 <Avatar icon={<UserAddOutlined />} size={64}/>
                 <div  style={{display:"flex", flexDirection:"column",gap:1}}>
                     <Text style={{fontFamily:"Roboto", fontSize:18, color: "white"}}>{user.username}</Text>
                     <Text style={{color: "var(--color-neutral-400", fontSize: 12}}>Never Stop Watching...</Text>
                 </div>
             </Space>
-            <SearchOutlined style={{fontSize:32, color:"var(--color-5-500)"}} />
+            <SearchOutlined style={{fontSize:32, color:"var(--color-5-500)"}}  onClick={()=> navigate(`/search`)} />
         </Row>
         <Tabs
             style={{width:"100%"}}

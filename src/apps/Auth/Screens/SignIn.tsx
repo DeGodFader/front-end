@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router'
 import FormItem from 'antd/es/form/FormItem'
 import { useState } from 'react'
 import LocalStorage from '../../../Helpers/storage'
+import AuthPost from '../API/api'
 
 const { Title, Text} = Typography
 
@@ -21,12 +22,14 @@ const SignIn = () => {
     return !(formData.username && formData.password)
   }
 
-  const Login=()=>{
+  const Login= async()=>{
     console.log("Here")
     setLoading(true)
+    const response= await AuthPost.login(formData.username, formData.password)
+    console.log(response)
     setTimeout(() => {
       LocalStorage.storeApp("users")
-      LocalStorage.storeCurrentUser({username: formData.username, email:"teacher@mail.com"})
+      LocalStorage.storeCurrentUser({username: formData.username, email:"teacher@mail.com", image:""})
       // window.notify({ type: "SUCCESS", message: "Logged In" })
       setTimeout(() => {
         document.dispatchEvent(new Event("changeapp"))
@@ -37,21 +40,21 @@ const SignIn = () => {
   
   return (
     <Space direction="vertical" align="center" style={{width:"100dvw", gap:20}}>
-        <Title style={{fontSize:40}}>KinoVerse</Title>
+        <Title style={{fontSize:'5dvh'}}>KinoVerse</Title>
         <Card style={{backgroundColor:"var(--color-neutral-800)", border:"none", width:"80dvw"}}>
-          <div style={{display:"flex", flexDirection:"column",alignItems:"center",width:"28rem", gap:5}}>
-            <img src='./svg/logo.svg' style={{height:"17rem"}}/>
-            <Text style={{fontSize:14}} strong>It's Just Entertainment</Text>
+          <div style={{display:"flex", flexDirection:"column",alignItems:"center",width:"28rem", gap:'1.5dvh'}}>
+          <img src='./svg/logo.svg' style={{height:"20dvh"}}/>
+            <Text style={{fontSize:'2dvh'}} strong>It's Just Entertainment</Text>
             <Form
               onFinish={Login}
               onFinishFailed={()=>{}}
               name='login'
-              style={{marginTop:"3rem"}}
+              style={{marginTop:"3dvh"}}
             >
               <Form.Item
                 name={"username"}
               >
-                <div style={{marginTop:20, display:"flex", justifyContent:"space-between", alignSelf:"stretch", padding:"2px 1px", alignItems:"center"}}>
+                <div style={{marginTop:'3dvh', display:"flex", justifyContent:"space-between", alignSelf:"stretch", padding:"2px 1px", alignItems:"center"}}>
                   <UserOutlined style={{color:"var(--color-primary-800)"}}/>
                   <Input 
                     style={{width: "90%", borderRadius:"25rem"}} 
@@ -83,7 +86,7 @@ const SignIn = () => {
                 </PrimaryButton>
               </Form.Item>
             </Form>
-            <div style={{marginTop:"9rem", position:'relative', left:"-5rem"}}>
+            <div style={{marginTop:"3dvh", position:'relative', left:"-5rem"}}>
                 <Text style={{fontSize:12}}>Do not have an account?... <span style={{color:"var(--color-5-500)", cursor:"pointer"}} onClick={()=>navigate(`/sign-up`)}>Signup</span></Text>
             </div>
           </div>

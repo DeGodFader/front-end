@@ -1,7 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { FetchDiscoverMovies, FetchDiscoverSeries, FetchMovie, FetchPopularMovies, FetchPopularSeries, FetchSerie, FetchTrending } from "../../Api/api";
+import UserPost, { FetchDiscoverMovies, FetchDiscoverSeries, FetchMovie, FetchPopularMovies, FetchPopularSeries, FetchSerie, FetchTrending } from "../../Api/api";
 import { notify } from "../../../../Helpers/functions";
 
+
+export const homePageAsync= createAsyncThunk(
+    "homePageAsync",
+    async()=>{
+        try {
+            const response: {trending: Array<any>, popular: {movies: Array<any>, series: Array<any>}, discover: {movies: Array<any>, series: Array<any>}}= await UserPost.homepage()
+            console.log(response)
+            return response
+        } catch (error) {
+            notify({type:"ERROR", message:"Try again", duration:3})
+            console.log(error)
+            return  {trending: [], popular: {movies: [], series:  []}, discover:{movies: [], series:  []}}
+        }
+    }
+)
 
 export const fetchTrendingAsync=createAsyncThunk(
     "fetchTrendingAsync",

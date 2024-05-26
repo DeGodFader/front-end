@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync } from "../thunks/resultThunk"
+import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync, homePageAsync } from "../thunks/resultThunk"
 import { RootState } from "../store"
 
 
@@ -457,6 +457,19 @@ const initialState: results={
     categories: []
 }
 
+function mergeArraysScattered(array1: Array<Trending>, array2: Array<Trending>): Array<Trending> {
+  const mergedArray: Array<Trending> = [];
+  const minLength = Math.min(array1.length, array2.length);
+
+  for (let i = 0; i < minLength; i++) {
+    mergedArray.push(array1[i], array2[i]);
+  }
+
+  mergedArray.push(...array1.slice(minLength), ...array2.slice(minLength));
+
+  return mergedArray;
+}
+
 export const getResultsSlice= createSlice({
     name: "getResults",
     initialState,
@@ -491,6 +504,28 @@ export const getResultsSlice= createSlice({
         }  
     },extraReducers(builder) {
         builder
+          .addCase(homePageAsync.pending, (state)=>{
+            state.loading= true
+          })
+          .addCase(homePageAsync.rejected, (state)=>{
+            state.loading= false
+          })
+          .addCase(homePageAsync.fulfilled, (state, action)=>{
+            state.trending= action.payload.trending
+            state.Dmovies= action.payload.discover.movies
+            state.Dtv_shows= action.payload.discover.series
+            state.Dtv_shows.map(show=>{
+            show.media_type="tv"
+            })
+            state.discover = [...state.popular, ...mergeArraysScattered(state.Dmovies, state.Dtv_shows)];
+            state.Pmovies= action.payload.popular.movies
+            state.Ptv_shows= action.payload.popular.series
+            state.Ptv_shows.map(show=>{
+             show.media_type="tv"
+            })
+           state.popular = [...state.popular, ...mergeArraysScattered(state.Ptv_shows, state.Pmovies)];
+            state.loading = false;
+          })
           .addCase(fetchTrendingAsync.pending, (state) => {
             state.loading = true;
           })
@@ -530,18 +565,6 @@ export const getResultsSlice= createSlice({
             state.loading = false;
           })
           .addCase(fetchDiscoverAsync.fulfilled, (state, action) => {
-            function mergeArraysScattered(array1: Array<Trending>, array2: Array<Trending>): Array<Trending> {
-                const mergedArray: Array<Trending> = [];
-                const minLength = Math.min(array1.length, array2.length);
-              
-                for (let i = 0; i < minLength; i++) {
-                  mergedArray.push(array1[i], array2[i]);
-                }
-              
-                mergedArray.push(...array1.slice(minLength), ...array2.slice(minLength));
-              
-                return mergedArray;
-              }
              state.Dmovies= action.payload.movies
              state.Dtv_shows= action.payload.series
              state.Dtv_shows.map(show=>{
@@ -557,18 +580,6 @@ export const getResultsSlice= createSlice({
             state.loading = false;
           })
           .addCase(fetchPopularMoviesAsync.fulfilled, (state, action) => {
-            function mergeArraysScattered(array1: Array<Trending>, array2: Array<Trending>): Array<Trending> {
-                const mergedArray: Array<Trending> = [];
-                const minLength = Math.min(array1.length, array2.length);
-              
-                for (let i = 0; i < minLength; i++) {
-                  mergedArray.push(array1[i], array2[i]);
-                }
-              
-                mergedArray.push(...array1.slice(minLength), ...array2.slice(minLength));
-              
-                return mergedArray.reverse();
-              }
              state.Pmovies= action.payload.movies
              state.Ptv_shows= action.payload.series
              state.Ptv_shows.map(show=>{

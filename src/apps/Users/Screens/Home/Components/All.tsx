@@ -14,6 +14,7 @@ const All = () => {
 
   const { trending, loading, categories, popular, discover } = useAppSelector((state)=> state.getResults)
 
+
   return (
     <>
         {loading?(
