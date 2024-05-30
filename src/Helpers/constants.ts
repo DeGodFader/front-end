@@ -1,3 +1,6 @@
+import { createClient } from "@supabase/supabase-js"
+import { SUPABASE_KEY, SUPABASE_URL } from "../appEnv"
+
 export default {
     STORAGE_KEY: {
       USER: "Kino_Verse-regex-key-34763-0001",
@@ -1094,3 +1097,8 @@ export const GenreMap= [
       "name": "български език"
     }
   ]
+
+  // Initialize the Supabase client
+const supabaseUrl = SUPABASE_URL? SUPABASE_URL : ""
+const supabaseKey = SUPABASE_KEY? SUPABASE_KEY : ""
+export const supabase = createClient(supabaseUrl, supabaseKey)

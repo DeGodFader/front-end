@@ -1,15 +1,18 @@
+import LocalStorage from "../../../Helpers/storage"
 import { APP_KEY, Node_Server } from "../../../appEnv"
 
 type AuthPostFunctions={
     login: any,
     resetPassword: any,
     signup: any,
+    logout: any
 }
 
 const AuthPost: AuthPostFunctions={
     login: {},
     resetPassword: {},
-    signup: {}
+    signup: {},
+    logout: {}
 }
 
 const header={
@@ -58,5 +61,23 @@ AuthPost.signup= async(userName: string, password: string, email: string)=>{
     return data
 }
 
+AuthPost.logout= async(id: string)=>{
+    const response= await fetch(
+        `${Node_Server}/auth/logout`,
+        {
+            method: "POST",
+            headers: {
+                ...header,
+                authorization: LocalStorage.getAccessToken()
+            },
+            body: JSON.stringify({
+                id: id
+            })
+        }
+    )
+
+    const data= await response.json()
+    return data
+}
 
 export default AuthPost

@@ -1,3 +1,4 @@
+import AuthPost from "../apps/Auth/API/api"
 import LocalStorage from "./storage"
 
 const excludedPaths = [
@@ -15,12 +16,19 @@ type notifProps = {
   from?: string
 }
 
-export const logout = () => {
-  LocalStorage.removeCurrentUser()
-  LocalStorage.storeApp("auth")
-  document.dispatchEvent(new Event("changeapp"))
-  location.assign("/")
-  sessionStorage.clear()
+export const logout = async () => {
+  const response= await AuthPost.logout()
+  console.log(LocalStorage.getAccessToken())
+  if(response.done=="1"){
+    LocalStorage.removeCurrentUser()
+    LocalStorage.storeApp("auth")
+    document.dispatchEvent(new Event("changeapp"))
+    location.assign("/")
+    sessionStorage.clear()
+  }else{
+    console.log(response)
+    notify({type:"ERROR", message:"Try Again", duration:3})
+  }
 }
 
 export function notify({ type, message, duration, context }: notifProps) {

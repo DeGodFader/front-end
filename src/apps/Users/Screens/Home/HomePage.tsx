@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync, homePageAsync } from '../../State/thunks/resultThunk'
 import { setFullArray } from '../../State/reducers/resultReducer'
 import { useNavigate } from 'react-router'
+import Loader from '../../../../Components/Loaders/Loader'
 
 const { Text, Title }= Typography
 
@@ -17,25 +18,14 @@ const HomePage = () => {
     const navigate= useNavigate()
     const user= LocalStorage.getCurrentUser()
     const dispatch= useAppDispatch()
-    useEffect(()=>{
-      // dispatch(fetchTrendingAsync(1)).then(_=>{
-      //   dispatch(fetchDiscoverAsync(1)).then(_=>{
-      //     dispatch(fetchPopularMoviesAsync(2)).then(_=>{
-      //       dispatch(setFullArray())
-      //     })
-      //   })
-      // })  
-      // dispatch(fetchTrendingAsync(2)).then(_=>{
-      //   dispatch(fetchDiscoverAsync(2)).then(_=>{
-      //     dispatch(fetchPopularMoviesAsync(1)).then(_=>{
-      //       dispatch(setFullArray())
-      //     })
-      //   })
-      // })  
-      dispatch(homePageAsync()).then(_=>{
-        dispatch(setFullArray())
-      })
-      
+    const { loading, categories, popular, discover } = useAppSelector((state)=> state.getResults)
+
+    useEffect(()=>{  
+      if(popular.length < 1){
+        dispatch(homePageAsync(user.id)).then(_=>{
+          dispatch(setFullArray())
+        })
+      }
     },[])
 
     const tabItems: TabsProps["items"] = [
@@ -57,7 +47,11 @@ const HomePage = () => {
       ]
   return (
     <main style={{padding:"15px 10px", overflowX:"hidden"}}>
-        <Row justify={"space-between"} align={"middle"}>
+        {loading?(
+          <Loader />
+        ):(
+          <>
+          <Row justify={"space-between"} align={"middle"}>
             <Space align='center'  onClick={()=> navigate(`/profile`)}>
                 <Avatar icon={<UserAddOutlined />} size={64}/>
                 <div  style={{display:"flex", flexDirection:"column",gap:1}}>
@@ -66,13 +60,15 @@ const HomePage = () => {
                 </div>
             </Space>
             <SearchOutlined style={{fontSize:32, color:"var(--color-5-500)"}}  onClick={()=> navigate(`/search`)} />
-        </Row>
-        <Tabs
+          </Row>
+          <Tabs
             style={{width:"100%"}}
             defaultActiveKey='all'
             items={tabItems}
             onChange={() => window.scrollTo({ top: 580, behavior: "smooth" })}
-        />
+          />
+        </>
+        )}
     </main>
   )
 }

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
-import { fetchSeriesAsync } from '../../State/thunks/resultThunk'
+import { fetchSeriesAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from '../../State/thunks/resultThunk'
 import { useNavigate, useParams } from 'react-router'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
 import { TMDB_IMAGE_BASE_PATH } from '../../../../appEnv'
-import { DownloadOutlined, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
+import { AppstoreAddOutlined, DownloadOutlined, FileDoneOutlined, HeartFilled, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
 import styled from 'styled-components'
 import { Button, Row, Space, TabsProps, Typography } from 'antd'
 import { GenreMap, LanguagesMap } from '../../../../Helpers/constants'
@@ -15,6 +15,7 @@ import Categories from '../../../../Components/MovieCategories/Categories'
 import CommentSection from '../../../../Components/MovieCategories/CommentSection'
 import Season from './Components/Season'
 import { Tabs2 } from '../../../../Components/Tabs/Tab1'
+import LocalStorage from '../../../../Helpers/storage'
 
 const {Title, Text} = Typography
 
@@ -31,13 +32,15 @@ const SingleShow = () => {
     const [items, setItems]= useState<Array<PicturesType>>([])
     const [cast, setCast]= useState<Array<CastType>>([])
     const [comments, setComments]= useState<Array<CommentsType>>([])
+    const [liked, setLiked]= useState<boolean>(false)
+    const [watched, setWatched]= useState<boolean>(false)
+    const [listed, setListed]= useState<boolean>(false)
   
-    const {tvShow, loading} = useAppSelector((state)=> state.getResults)
+    const {tvShow, loading, liked_movies, my_list, watch_history} = useAppSelector((state)=> state.getResults)
     console.log(tvShow)
   
     useEffect(()=>{
       if (id) {
-        console.log(id)
         dispatch(fetchSeriesAsync(id))
       }
     },[])
@@ -84,8 +87,50 @@ const SingleShow = () => {
   
           return [...commentss]
         })
+        setLiked(liked_movies.find(like=> like.id===tvShow.id)!==undefined? true : false)
+        setListed(my_list.find(like=> like.id===tvShow.id)!==undefined? true : false)
+        setWatched(watch_history.find(like=> like.id===tvShow.id)!==undefined? true : false)
       }
     },[tvShow])
+
+    const LikeMovie= async()=>{
+      try {
+        const genre_ids: Array<number>=[]
+        tvShow.genres.map(gen=>{
+          genre_ids.push(gen.id)
+        })
+        dispatch(likeMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: tvShow.id, name: tvShow.original_name, genre_ids: genre_ids, poster_path: tvShow.poster_path}}))
+        setLiked(true)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  
+    const WishListMovie= async()=>{
+      try {
+        const genre_ids: Array<number>=[]
+        tvShow.genres.map(gen=>{
+          genre_ids.push(gen.id)
+        })
+        dispatch(wishListMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: tvShow.id, name: tvShow.original_name, genre_ids: genre_ids, poster_path: tvShow.poster_path}}))
+        setListed(true)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  
+    const watchMovie= async()=>{
+      try {
+        const genre_ids: Array<number>=[]
+        tvShow.genres.map(gen=>{
+          genre_ids.push(gen.id)
+        })
+        dispatch(watchMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: tvShow.id, name: tvShow.original_name, genre_ids: genre_ids, poster_path: tvShow.poster_path}}))
+        setLiked(true)
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     const tabItems: TabsProps["items"] = tvShow.seasons.map(season=>({
       key: String(season.id),
@@ -105,8 +150,11 @@ const SingleShow = () => {
                 <div className='shadow'>.</div>
                 <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> navigate("/")}/>
                 <Space style={{gap: 10, color:"var(--color-5-500", fontSize:24, position:'absolute', right:10, top: 30,}}>
-                  <HeartOutlined style={{fontWeight:800, fontSize:24,}} onClick={()=>{}}/>
-                  <MoreOutlined style={{fontWeight:800, fontSize:24,}} onClick={()=> navigate("/")}/>
+                  {!liked?(
+                    <HeartOutlined style={{fontWeight:800, fontSize:24}} onClick={LikeMovie}/>
+                  ):(
+                    <HeartFilled style={{fontWeight:800, fontSize:24}}/>
+                  )} 
                 </Space>
                 <div className='rating'>
                   <StarFilled style={{color:"gold"}}/>  <span>{tvShow.vote_average.toPrecision(2)}</span>
@@ -136,17 +184,21 @@ const SingleShow = () => {
                   items={tabItems}
                   onChange={() => window.scrollTo({ top: 580, behavior: "smooth" })}
               />
-              {/* <center style={{marginTop:"3rem"}}>
+              <center style={{marginTop:"3rem"}}>
                 <Row justify={"space-around"}>
                   <PrimaryButton>
-                    <Btn type='primary'>
+                    <Btn type='primary' onClick={watchMovie}>
                       <PlayCircleFilled/>
                       Watch
                     </Btn >
                   </PrimaryButton>
-                  <DownloadOutlined style={{color:"var(--color-secondary-500)", fontSize:42}}/>
+                  {!listed?(
+                    <AppstoreAddOutlined style={{color:"var(--color-secondary-500)", fontSize:42}} onClick={WishListMovie}/>
+                  ):(
+                    <FileDoneOutlined style={{color:"var(--color-secondary-500)", fontSize:42}}/>
+                  )}
                 </Row>
-              </center> */}
+              </center>
               <Categories items={items} title='Screenshots' clickable={false}/>
               <Categories items={cast} title='Cast' clickable={false} />
               <CommentSection comments={comments} />

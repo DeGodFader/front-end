@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync, homePageAsync } from "../thunks/resultThunk"
+import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync, homePageAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from "../thunks/resultThunk"
 import { RootState } from "../store"
 
+
+export interface likeAMovie{
+  id: string
+  movie:{id: number, name: string, genre_ids: Array<any>, poster_path: string}
+}
 
 interface TVShow {
   adult: boolean;
@@ -198,7 +203,7 @@ interface Credits {
 export interface Trending {
     adult: boolean,
     backdrop_path: string,
-    id: string,
+    id: string|number,
     title: string,
     original_language: string,
     original_title: string,
@@ -331,19 +336,24 @@ interface Movie {
 
 interface results{
   tvShow: TVShow
-    movie: Movie
-    all: Array<Trending>
-    popular: Array<Trending>
-    discover: Array<Trending>
-    trending: Array<Trending>
-    Tmovies: Array<Trending>
-    Ttv_shows: Array<Trending>
-    Pmovies: Array<Trending>
-    Ptv_shows: Array<Trending>
-    Dmovies: Array<Trending>
-    Dtv_shows: Array<Trending>
-    loading: boolean
-    categories: Array<CategoryType>
+  movie: Movie
+  all: Array<Trending>
+  popular: Array<Trending>
+  discover: Array<Trending>
+  trending: Array<Trending>
+  Tmovies: Array<Trending>
+  Ttv_shows: Array<Trending>
+  Pmovies: Array<Trending>
+  Ptv_shows: Array<Trending>
+  Dmovies: Array<Trending>
+  Dtv_shows: Array<Trending>
+  loading: boolean
+  categories: Array<CategoryType>
+  liked_movies: Array<Partial<Trending>>
+  trailers_watched: Array<Partial<Trending>>
+  my_list: Array<Partial<Trending>>
+  watch_history: Array<Partial<Trending>>
+  recommendations: Array<Partial<Trending>>
 }
 
 const singleTVShow: TVShow = {
@@ -454,7 +464,12 @@ const initialState: results={
     Dmovies: [],
     Dtv_shows: [],
     loading: false,
-    categories: []
+    categories: [],
+    recommendations: [],
+    watch_history: [],
+    my_list: [],
+    trailers_watched: [],
+    liked_movies: []
 }
 
 function mergeArraysScattered(array1: Array<Trending>, array2: Array<Trending>): Array<Trending> {
@@ -504,6 +519,15 @@ export const getResultsSlice= createSlice({
         }  
     },extraReducers(builder) {
         builder
+          .addCase(likeMovieAsync.fulfilled, (state, action)=>{
+            state.liked_movies=action.payload
+          })
+          .addCase(watchMovieAsync.fulfilled, (state, action)=>{
+            state.watch_history=action.payload
+          })
+          .addCase(wishListMovieAsync.fulfilled, (state, action)=>{
+            state.my_list=action.payload
+          })
           .addCase(homePageAsync.pending, (state)=>{
             state.loading= true
           })
@@ -511,19 +535,25 @@ export const getResultsSlice= createSlice({
             state.loading= false
           })
           .addCase(homePageAsync.fulfilled, (state, action)=>{
-            state.trending= action.payload.trending
-            state.Dmovies= action.payload.discover.movies
-            state.Dtv_shows= action.payload.discover.series
+            state.trending= action.payload.movies.trending
+            state.Tmovies = [...state.Tmovies, ...action.payload.movies.trending.filter(movie => movie.media_type === "movie")];
+            state.Ttv_shows = [...state.Ttv_shows, ...action.payload.movies.trending.filter(movie => movie.media_type === "tv")];
+            state.Dmovies= action.payload.movies.discover.movies
+            state.Dtv_shows= action.payload.movies.discover.series
             state.Dtv_shows.map(show=>{
-            show.media_type="tv"
+              show.media_type="tv"
             })
             state.discover = [...state.popular, ...mergeArraysScattered(state.Dmovies, state.Dtv_shows)];
-            state.Pmovies= action.payload.popular.movies
-            state.Ptv_shows= action.payload.popular.series
+            state.Pmovies= action.payload.movies.popular.movies
+            state.Ptv_shows= action.payload.movies.popular.series
             state.Ptv_shows.map(show=>{
-             show.media_type="tv"
+              show.media_type="tv"
             })
-           state.popular = [...state.popular, ...mergeArraysScattered(state.Ptv_shows, state.Pmovies)];
+            state.popular = [...state.popular, ...mergeArraysScattered(state.Ptv_shows, state.Pmovies)];
+            state.watch_history= action.payload.user.history
+            state.liked_movies= action.payload.user.likes
+            state.my_list= action.payload.user.watch_list
+            state.recommendations= action.payload.recommendations
             state.loading = false;
           })
           .addCase(fetchTrendingAsync.pending, (state) => {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
-import { fetchMovieAsync } from '../../State/thunks/resultThunk'
+import { fetchMovieAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from '../../State/thunks/resultThunk'
 import { useNavigate, useParams } from 'react-router'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
 import { TMDB_IMAGE_BASE_PATH } from '../../../../appEnv'
-import { DownloadOutlined, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
+import { AppstoreAddOutlined, CheckOutlined, DownloadOutlined, FileAddOutlined, FileDoneOutlined, HeartFilled, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
 import styled from 'styled-components'
 import { Button, Row, Space, Typography } from 'antd'
 import { GenreMap, LanguagesMap } from '../../../../Helpers/constants'
@@ -13,6 +13,8 @@ import { PrimaryButton } from '../../../../Components/Buttons/Buttons'
 import Categories from '../../../../Components/MovieCategories/Categories'
 import CommentSection from '../../../../Components/MovieCategories/CommentSection'
 import Loader from '../../../../Components/Loaders/Loader'
+import UserPost from '../../Api/api'
+import LocalStorage from '../../../../Helpers/storage'
 
 const {Title, Text} = Typography
 
@@ -29,8 +31,11 @@ const SingleMovie = () => {
   const [items, setItems]= useState<Array<PicturesType>>([])
   const [cast, setCast]= useState<Array<CastType>>([])
   const [comments, setComments]= useState<Array<CommentsType>>([])
+  const [liked, setLiked]= useState<boolean>(false)
+  const [watched, setWatched]= useState<boolean>(false)
+  const [listed, setListed]= useState<boolean>(false)
 
-  const {movie, loading} = useAppSelector((state)=> state.getResults)
+  const {movie, loading, liked_movies, my_list, watch_history} = useAppSelector((state)=> state.getResults)
   console.log(movie)
 
   useEffect(()=>{
@@ -82,10 +87,52 @@ const SingleMovie = () => {
 
         return [...commentss]
       })
+      setLiked(liked_movies.find(like=> like.id===movie.id)!==undefined? true : false)
+      setListed(my_list.find(like=> like.id===movie.id)!==undefined? true : false)
+      setWatched(watch_history.find(like=> like.id===movie.id)!==undefined? true : false)
     }
   },[movie])
 
-  console.log(items)
+  const LikeMovie= async()=>{
+    try {
+      const genre_ids: Array<number>=[]
+      movie.genres.map(gen=>{
+        genre_ids.push(gen.id)
+      })
+      dispatch(likeMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: movie.id, name: movie.original_title, genre_ids: genre_ids, poster_path: movie.poster_path}}))
+      setLiked(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const WishListMovie= async()=>{
+    try {
+      const genre_ids: Array<number>=[]
+      movie.genres.map(gen=>{
+        genre_ids.push(gen.id)
+      })
+      dispatch(wishListMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: movie.id, name: movie.original_title, genre_ids: genre_ids, poster_path: movie.poster_path}}))
+      setListed(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const watchMovie= async()=>{
+    try {
+      const genre_ids: Array<number>=[]
+      movie.genres.map(gen=>{
+        genre_ids.push(gen.id)
+      })
+      dispatch(watchMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: movie.id, name: movie.original_title, genre_ids: genre_ids, poster_path: movie.poster_path}}))
+      setLiked(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  console.log()
 
   return (
     <>
@@ -99,8 +146,11 @@ const SingleMovie = () => {
                 <div className='shadow'>.</div>
                 <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> navigate("/")}/>
                 <Space style={{gap: 10, color:"var(--color-5-500", fontSize:24, position:'absolute', right:10, top: 30,}}>
-                  <HeartOutlined style={{fontWeight:800, fontSize:24,}} onClick={()=>{}}/>
-                  <MoreOutlined style={{fontWeight:800, fontSize:24,}} onClick={()=> navigate("/")}/>
+                  {!liked?(
+                    <HeartOutlined style={{fontWeight:800, fontSize:24}} onClick={LikeMovie}/>
+                  ):(
+                    <HeartFilled style={{fontWeight:800, fontSize:24}}/>
+                  )}
                 </Space>
                 <div className='rating'>
                   <StarFilled style={{color:"gold"}}/>  <span>{movie.vote_average.toPrecision(2)}</span>
@@ -128,12 +178,16 @@ const SingleMovie = () => {
               <center style={{marginTop:"3rem"}}>
                 <Row justify={"space-around"}>
                   <PrimaryButton>
-                    <Btn type='primary'>
+                    <Btn type='primary' onClick={watchMovie}>
                       <PlayCircleFilled/>
                       Watch
                     </Btn >
                   </PrimaryButton>
-                  <DownloadOutlined style={{color:"var(--color-secondary-500)", fontSize:42}}/>
+                  {!listed?(
+                    <AppstoreAddOutlined style={{color:"var(--color-secondary-500)", fontSize:42}} onClick={WishListMovie}/>
+                  ):(
+                    <FileDoneOutlined style={{color:"var(--color-secondary-500)", fontSize:42}}/>
+                  )}
                 </Row>
               </center>
               <Categories items={items} title='Screenshots' clickable={false}/>

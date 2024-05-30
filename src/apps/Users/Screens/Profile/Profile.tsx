@@ -1,6 +1,6 @@
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { Avatar, Row, Space, Typography } from 'antd'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import LocalStorage from '../../../../Helpers/storage'
 import Categories from '../../../../Components/MovieCategories/Categories'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router'
 import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync } from '../../State/thunks/resultThunk'
 import { setFullArray } from '../../State/reducers/resultReducer'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
+import { logout } from '../../../../Helpers/functions'
 
 const { Title, Text} = Typography
 
@@ -16,6 +17,8 @@ const Profile = () => {
     const dispatch= useAppDispatch()
     const user=LocalStorage.getCurrentUser()
     const { Dmovies, Dtv_shows, loading }= useAppSelector((state)=> state.getResults)
+
+    const [logingout, setLogingOut]= useState<boolean>(false)
     useEffect(()=>{
         if(Dmovies.length<1){
             dispatch(fetchTrendingAsync(1)).then(_=>{
@@ -35,6 +38,11 @@ const Profile = () => {
         }
         
       },[])
+
+      const SignOut= async()=>{
+        setLogingOut(true)
+        await logout()
+      }
   return (
     <main style={{padding:"0px 10px", overflowX:"hidden"}}>
         {loading?(
@@ -46,7 +54,7 @@ const Profile = () => {
                         <img src='/svg/loading.svg' className='pulsate' style={{width: "10vw", height:"10vw"}} />
                         <Title>KINOVERSE</Title>
                     </Space>
-                    <LogoutOutlined style={{color:"var(--color-5-500)", fontSize:"30px"}} />
+                    <LogoutOutlined style={{color:"var(--color-5-500)", fontSize:"30px"}} disabled={logingout} onClick={()=>{SignOut()}}/>
                 </Row>
                 <Space direction='vertical' style={{width:"100%", marginTop:"7dvh"}}>
                     <center>

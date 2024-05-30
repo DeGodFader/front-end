@@ -27,15 +27,11 @@ const SignIn = () => {
     setLoading(true)
     const response= await AuthPost.login(formData.username, formData.password)
     console.log(response)
-    setTimeout(() => {
-      LocalStorage.storeApp("users")
-      LocalStorage.storeCurrentUser({username: formData.username, email:"teacher@mail.com", image:""})
-      // window.notify({ type: "SUCCESS", message: "Logged In" })
-      setTimeout(() => {
-        document.dispatchEvent(new Event("changeapp"))
-        location.assign("/")
-      }, 750)
-    }, 2000);
+    LocalStorage.storeApp("users")
+    LocalStorage.storeAccessToken(response.authorization)
+    LocalStorage.storeCurrentUser({id: response.id, username: response.username, email: response.email})
+    document.dispatchEvent(new Event("changeapp"))
+    location.assign("/")
   }
   
   return (

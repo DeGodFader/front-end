@@ -1,19 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import UserPost, { FetchDiscoverMovies, FetchDiscoverSeries, FetchMovie, FetchPopularMovies, FetchPopularSeries, FetchSerie, FetchTrending } from "../../Api/api";
 import { notify } from "../../../../Helpers/functions";
+import { likeAMovie } from "../reducers/resultReducer";
 
 
 export const homePageAsync= createAsyncThunk(
     "homePageAsync",
-    async()=>{
+    async(id: string)=>{
         try {
-            const response: {trending: Array<any>, popular: {movies: Array<any>, series: Array<any>}, discover: {movies: Array<any>, series: Array<any>}}= await UserPost.homepage()
+            const response: {movies:{trending: Array<any>, popular: {movies: Array<any>, series: Array<any>}, discover: {movies: Array<any>, series: Array<any>}}, user:{watch_list: Array<any>, likes:Array<any>, history:Array<any>}, recommendations: Array<any>}= await UserPost.homepage(id)
             console.log(response)
             return response
         } catch (error) {
             notify({type:"ERROR", message:"Try again", duration:3})
             console.log(error)
-            return  {trending: [], popular: {movies: [], series:  []}, discover:{movies: [], series:  []}}
+            return  {movies:{trending: [], popular: {movies: [], series:  []}, discover:{movies: [], series:  []}}, recommendations: [], user:{watch_list: [], likes:[], history:[]}}
         }
     }
 )
@@ -88,5 +89,44 @@ export const fetchPopularMoviesAsync=createAsyncThunk(
             console.log(error)
             return {movies:[], series:[]}
         }
+    }
+)
+
+export const likeMovieAsync= createAsyncThunk(
+    "likeMovieAsync",
+    async (data: likeAMovie)=>{
+        try {
+            const response= await UserPost.like(data.id, data.movie)
+            return response
+        } catch (error) {
+            console.log(error)
+            return []
+          }
+    }
+)
+
+export const wishListMovieAsync= createAsyncThunk(
+    "wishListMovieAsync",
+    async (data: likeAMovie)=>{
+        try {
+            const response= await UserPost.wishList(data.id, data.movie)
+            return response
+        } catch (error) {
+            console.log(error)
+            return []
+          }
+    }
+)
+
+export const watchMovieAsync= createAsyncThunk(
+    "watchMovieAsync",
+    async (data: likeAMovie)=>{
+        try {
+            const response= await UserPost.history(data.id, data.movie)
+            return response
+        } catch (error) {
+            console.log(error)
+            return []
+          }
     }
 )

@@ -44,9 +44,10 @@ const Categories: React.FC<CategoryType> = ({title, movies, items, clickable}) =
                 <Card key={index}>
                     {item.type==="video"&&(
                         <iframe
+                            className='youtube-player'
                             width="300"
                             height="195"
-                            src={`${TMDB_TRAILER_VIDEO_PATH}${item.path}`}
+                            src={`${TMDB_TRAILER_VIDEO_PATH}/${item.path}`}
                             title="YouTube video player"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
