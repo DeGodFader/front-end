@@ -3,10 +3,10 @@ import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import { fetchMovieAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from '../../State/thunks/resultThunk'
 import { useNavigate, useParams } from 'react-router'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
-import { TMDB_IMAGE_BASE_PATH } from '../../../../appEnv'
-import { AppstoreAddOutlined, CheckOutlined, DownloadOutlined, FileAddOutlined, FileDoneOutlined, HeartFilled, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
+import { TMDB_IMAGE_BASE_PATH, TMDB_TRAILER_VIDEO_PATH } from '../../../../appEnv'
+import { AppstoreAddOutlined, CheckOutlined, CloseOutlined, DownloadOutlined, FileAddOutlined, FileDoneOutlined, HeartFilled, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
 import styled from 'styled-components'
-import { Button, Row, Space, Typography } from 'antd'
+import { Button, Popover, Row, Space, Typography, Modal } from 'antd'
 import { GenreMap, LanguagesMap } from '../../../../Helpers/constants'
 import dayjs from 'dayjs'
 import { PrimaryButton } from '../../../../Components/Buttons/Buttons'
@@ -24,7 +24,7 @@ type CommentsType={avatar_path: string,author: string,rating: number,content: st
 
 
 const SingleMovie = () => {
-  const {id}= useParams()
+  const {id, result}= useParams()
   const dispatch= useAppDispatch()
   const navigate= useNavigate()
 
@@ -34,6 +34,7 @@ const SingleMovie = () => {
   const [liked, setLiked]= useState<boolean>(false)
   const [watched, setWatched]= useState<boolean>(false)
   const [listed, setListed]= useState<boolean>(false)
+  const [open, setOpen]= useState<boolean>(false)
 
   const {movie, loading, liked_movies, my_list, watch_history} = useAppSelector((state)=> state.getResults)
   console.log(movie)
@@ -126,7 +127,7 @@ const SingleMovie = () => {
         genre_ids.push(gen.id)
       })
       dispatch(watchMovieAsync({id:LocalStorage.getCurrentUser().id,movie:{id: movie.id, name: movie.original_title, genre_ids: genre_ids, poster_path: movie.poster_path}}))
-      setLiked(true)
+      setWatched(true)
     } catch (error) {
       console.log(error)
     }
@@ -134,8 +135,28 @@ const SingleMovie = () => {
 
   console.log()
 
+  const Watch=()=>{
+    return(
+      <ReotateHolder>
+        <CloseOutlined style={{position:'fixed',right:20, top:20, fontSize:30, zIndex:9999, color:"whitesmoke"}} onClick={()=>{setOpen(false)}}/>
+        <RotatedComponent>
+          <iframe
+            style={{ width:"100%", height:"100%"}}
+            className='youtube-player'
+            src={`${TMDB_TRAILER_VIDEO_PATH}/${movie.videos?.results?.find(video => video.type.toLocaleLowerCase().includes("trailer"))?.key}`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </RotatedComponent>
+      </ReotateHolder>
+    )
+  }
+
   return (
     <>
+      {open&&(<Watch />)}
       {loading?(
         <Loader />
       ): (
@@ -144,7 +165,9 @@ const SingleMovie = () => {
             <BackDrop>
                 <img src={`${TMDB_IMAGE_BASE_PATH}${movie.backdrop_path}`} style={{width:"100dvw", height:"40dvh", opacity:0.9}} alt={`${movie.title}-image`} />
                 <div className='shadow'>.</div>
-                <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> navigate("/")}/>
+                <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> {
+                  result? navigate("/search") : navigate("/")
+                }}/>
                 <Space style={{gap: 10, color:"var(--color-5-500", fontSize:24, position:'absolute', right:10, top: 30,}}>
                   {!liked?(
                     <HeartOutlined style={{fontWeight:800, fontSize:24}} onClick={LikeMovie}/>
@@ -178,7 +201,10 @@ const SingleMovie = () => {
               <center style={{marginTop:"3rem"}}>
                 <Row justify={"space-around"}>
                   <PrimaryButton>
-                    <Btn type='primary' onClick={watchMovie}>
+                    <Btn type='primary' onClick={()=>{
+                      setOpen(true)
+                      watchMovie()
+                      }}>
                       <PlayCircleFilled/>
                       Watch
                     </Btn >
@@ -205,6 +231,23 @@ const SingleMovie = () => {
 export default SingleMovie
 
 
+const ReotateHolder = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh; /* Use vh here because the width becomes the height after rotation */
+  width: 100dvw; /* Use vw here because the height becomes the width after rotation */
+  z-index: 9999;
+`
+
+const RotatedComponent = styled.div`
+  position: relative;
+  right: 25dvh;
+  height: 100%;
+  width: 100dvh;
+  transform: rotate(90deg);
+`;
+
 const BackDrop= styled.div`
     position: relative;
     display: inline-block;
@@ -225,7 +268,7 @@ const BackDrop= styled.div`
       bottom:25px;
       left: 10px;
       font-size: 24px !important;
-      width: 50%;
+      width: 100%;
     }
 
     & .rating{

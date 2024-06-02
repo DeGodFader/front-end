@@ -25,7 +25,7 @@ type CommentsType={avatar_path: string,author: string,rating: number,content: st
 
 
 const SingleShow = () => {
-    const {id}= useParams()
+    const {id, result}= useParams()
     const dispatch= useAppDispatch()
     const navigate= useNavigate()
   
@@ -148,7 +148,9 @@ const SingleShow = () => {
             <BackDrop>
                 <img src={`${TMDB_IMAGE_BASE_PATH}${tvShow.backdrop_path}`} style={{width:"100dvw", height:"40dvh", opacity:0.9}} alt={`${tvShow.name}-image`} />
                 <div className='shadow'>.</div>
-                <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> navigate("/")}/>
+                <LeftCircleOutlined style={{color:"var(--color-5-500", fontSize:24, position:'absolute', left:10, top: 30, fontWeight:800}} onClick={()=> {
+                  result? navigate("/search") : navigate("/")
+                }}/>
                 <Space style={{gap: 10, color:"var(--color-5-500", fontSize:24, position:'absolute', right:10, top: 30,}}>
                   {!liked?(
                     <HeartOutlined style={{fontWeight:800, fontSize:24}} onClick={LikeMovie}/>

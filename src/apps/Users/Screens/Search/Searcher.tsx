@@ -29,6 +29,10 @@ const Searcher = () => {
     })
   }
 
+  useEffect(()=>{
+    if(search.length>1) setSeaching("Done")
+  },[])
+
   return (
     <main style={{padding:"15px 10px", overflowX:"hidden"}}>
         <Form
@@ -56,7 +60,7 @@ const Searcher = () => {
                       if(movie.poster_path)
                         return(
                           <Col key={index} span={11} style={{marginBottom: 30}}>
-                            <Card key={index} onClick={()=>{movie.media_type=="tv"? navigate(`/tv_show/${movie.id}`):navigate(`/movie/${movie.id}`)}}>
+                            <Card key={index} onClick={()=>{movie.media_type=="tv"? navigate(`/tv_show/${movie.id}/${index}`):navigate(`/movie/${movie.id}/${index}`)}}>
                               <img src={`${TMDB_IMAGE_BASE_PATH}${movie.poster_path}`} width={"100%"} height={195}/>
                               <Tex >{movie.title? movie.title : movie.name}</Tex>
                               <Genres>

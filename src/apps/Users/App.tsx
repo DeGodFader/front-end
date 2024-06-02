@@ -15,8 +15,8 @@ const App= ()=>{
       <Router>
         <Routes>
           <Route path='/' element={<HomePage />} />
-          <Route path='/movie/:id' element={<SingleMovie />} />
-          <Route path='/tv_show/:id' element={<SingleShow />} />
+          <Route path='/movie/:id/:result?' element={<SingleMovie />} />
+          <Route path='/tv_show/:id/:result?' element={<SingleShow />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/search' element={<Searcher />} />
         </Routes>
