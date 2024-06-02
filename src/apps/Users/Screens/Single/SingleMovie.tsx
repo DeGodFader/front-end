@@ -242,7 +242,7 @@ const ReotateHolder = styled.div`
 
 const RotatedComponent = styled.div`
   position: relative;
-  right: 25dvh;
+  right: 55%;
   height: 100%;
   width: 100dvh;
   transform: rotate(90deg);
