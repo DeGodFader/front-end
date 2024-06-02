@@ -9,7 +9,6 @@ export const homePageAsync= createAsyncThunk(
     async(id: string)=>{
         try {
             const response: {movies:{trending: Array<any>, popular: {movies: Array<any>, series: Array<any>}, discover: {movies: Array<any>, series: Array<any>}}, user:{watch_list: Array<any>, likes:Array<any>, history:Array<any>}, recommendations: Array<any>}= await UserPost.homepage(id)
-            console.log(response)
             return response
         } catch (error) {
             notify({type:"ERROR", message:"Try again", duration:3})
@@ -128,5 +127,18 @@ export const watchMovieAsync= createAsyncThunk(
             console.log(error)
             return []
           }
+    }
+)
+
+export const searchMovieAsync= createAsyncThunk(
+    "searchMovieAsync",
+    async(word: string)=>{
+        try {
+            const response= await UserPost.searchMovie(word)
+            return response
+        } catch (error) {
+            console.log(error)
+            return []
+        }
     }
 )

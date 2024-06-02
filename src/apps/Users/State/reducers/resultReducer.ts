@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync, homePageAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from "../thunks/resultThunk"
+import { fetchDiscoverAsync, fetchMovieAsync, fetchPopularMoviesAsync, fetchSeriesAsync, fetchTrendingAsync, homePageAsync, likeMovieAsync, searchMovieAsync, watchMovieAsync, wishListMovieAsync } from "../thunks/resultThunk"
 import { RootState } from "../store"
 
 
@@ -354,6 +354,7 @@ interface results{
   my_list: Array<Partial<Trending>>
   watch_history: Array<Partial<Trending>>
   recommendations: Array<Partial<Trending>>
+  search: Array<Partial<Trending>>
 }
 
 const singleTVShow: TVShow = {
@@ -469,7 +470,8 @@ const initialState: results={
     watch_history: [],
     my_list: [],
     trailers_watched: [],
-    liked_movies: []
+    liked_movies: [],
+    search: []
 }
 
 function mergeArraysScattered(array1: Array<Trending>, array2: Array<Trending>): Array<Trending> {
@@ -527,6 +529,16 @@ export const getResultsSlice= createSlice({
           })
           .addCase(wishListMovieAsync.fulfilled, (state, action)=>{
             state.my_list=action.payload
+          })
+          .addCase(searchMovieAsync.pending, (state)=>{
+            state.loading= true
+          })
+          .addCase(searchMovieAsync.rejected, (state)=>{
+            state.loading= false
+          })
+          .addCase(searchMovieAsync.fulfilled, (state, action)=>{
+            state.search=action.payload
+            state.loading=false
           })
           .addCase(homePageAsync.pending, (state)=>{
             state.loading= true

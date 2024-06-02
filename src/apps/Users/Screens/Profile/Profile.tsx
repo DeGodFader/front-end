@@ -5,7 +5,7 @@ import LocalStorage from '../../../../Helpers/storage'
 import Categories from '../../../../Components/MovieCategories/Categories'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import { useNavigate } from 'react-router'
-import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync } from '../../State/thunks/resultThunk'
+import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync, homePageAsync } from '../../State/thunks/resultThunk'
 import { setFullArray } from '../../State/reducers/resultReducer'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
 import { logout } from '../../../../Helpers/functions'
@@ -16,25 +16,14 @@ const Profile = () => {
     const navigate= useNavigate()
     const dispatch= useAppDispatch()
     const user=LocalStorage.getCurrentUser()
-    const { Dmovies, Dtv_shows, loading }= useAppSelector((state)=> state.getResults)
+    const { Dmovies, Dtv_shows, loading, watch_history, liked_movies, my_list }= useAppSelector((state)=> state.getResults)
 
     const [logingout, setLogingOut]= useState<boolean>(false)
     useEffect(()=>{
         if(Dmovies.length<1){
-            dispatch(fetchTrendingAsync(1)).then(_=>{
-                dispatch(fetchDiscoverAsync(1)).then(_=>{
-                  dispatch(fetchPopularMoviesAsync(2)).then(_=>{
-                    dispatch(setFullArray())
-                  })
-                })
-              })  
-              dispatch(fetchTrendingAsync(2)).then(_=>{
-                dispatch(fetchDiscoverAsync(2)).then(_=>{
-                  dispatch(fetchPopularMoviesAsync(1)).then(_=>{
-                    dispatch(setFullArray())
-                  })
-                })
-              }) 
+          dispatch(homePageAsync(user.id)).then(_=>{
+            dispatch(setFullArray())
+          })
         }
         
       },[])
@@ -63,11 +52,11 @@ const Profile = () => {
                             <Text style={{fontSize:20, fontFamily:"Roboto"}}>{user.username}</Text>
                         </Space>
                     </center>
-                    <Categories title='Notification' movies={Dtv_shows.slice(10,14)} clickable={true} />
-                    <Categories title='Liked Movoes/TV Shows' movies={Dmovies} clickable={true} />
-                    <Categories title='My List' movies={Dtv_shows} clickable={true} />
-                    <Categories title='Watch History' movies={Dmovies.slice(0,10)} clickable={true} />
-                    <Categories title='Trailers Watched' movies={Dmovies.slice(20,30)} clickable={true} />
+                    {/* <Categories title='Notification' movies={Dtv_shows.slice(10,14)} clickable={true} /> */}
+                    <Categories title='Liked Movoes/TV Shows' movies={liked_movies} clickable={true} />
+                    <Categories title='My List' movies={my_list} clickable={true} />
+                    <Categories title='Watch History' movies={watch_history} clickable={true} />
+                    {/* <Categories title='Trailers Watched' movies={Dmovies.slice(20,30)} clickable={true} /> */}
                 </Space>
             </>
         )}

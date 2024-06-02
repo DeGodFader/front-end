@@ -11,7 +11,7 @@ const { Title, Text } = Typography
 
 type CategoryType={
     title: string,
-    movies?: Array<Trending>
+    movies?: Array<Trending> | Array<Partial<Trending>>
     items?: Array<{path: String, type: "video" | "image", name?:string, character?: string}>
     clickable: boolean
 }
@@ -30,14 +30,28 @@ const Categories: React.FC<CategoryType> = ({title, movies, items, clickable}) =
                     }
                 }}>
                     <img src={`${TMDB_IMAGE_BASE_PATH}${movie.poster_path}`} width={160} height={195}/>
-                    <Tex >{movie.title? movie.title : movie.name}</Tex>
-                    <Genres>
-                        {movie.genre_ids.map((genre, index)=>{
-                            if(index<2)return(
-                                <SubText key={index}>{`${GenreMap.find(gen=>{ return gen.id===genre}).name}${index==1? ``: " | "}`}</SubText>
-                            )
-                        })}
-                    </Genres>
+                    {movie.original_title?(
+                        <Tex >{movie.original_title}</Tex>
+                    ):(
+                        <Tex >{movie.title? movie.title : movie.name}</Tex>
+                    )}
+                    {movie.genre_ids?(
+                        <Genres>
+                            {movie.genre_ids.map((genre, index)=>{
+                                if(index<2)return(
+                                    <SubText key={index}>{`${GenreMap.find(gen=>{ return gen.id===genre}).name}${index==1? ``: " | "}`}</SubText>
+                                )
+                            })}
+                        </Genres>
+                    ):(
+                        <Genres>
+                            {movie.genres.split(" ").map((genre, index)=>{
+                                if(index<2)return(
+                                    <SubText key={index}>{`${genre}${index==1? ``: " | "}`}</SubText>
+                                )
+                            })}
+                        </Genres>
+                    )}
                 </Card>
                 ))}
                 {items && items.map((item, index) => (
@@ -74,6 +88,7 @@ const Scroller= styled.div`
     padding-bottom: 12px; 
     scrollbar-width: none; 
     -ms-overflow-style: none; 
+    height: 230px;
     &::-webkit-scrollbar {
         display: none; 
     }
@@ -84,7 +99,7 @@ const Wrapper= styled.div`
 `
 const Card=styled(AntCard)`
     display: inline-block;
-    margin-right: 5px; 
+    margin-right: 20px; 
     margin-bottom: 10px;
     background: transparent;
     border: none;

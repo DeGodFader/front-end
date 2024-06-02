@@ -7,6 +7,7 @@ type UserPostsType={
     like:(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>Promise<Array<any>>
     wishList:(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>Promise<Array<any>>
     history:(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>Promise<Array<any>>
+    searchMovie:(word: string)=>Promise<Array<any>>
 }
 
 const UserPost: UserPostsType={
@@ -16,7 +17,9 @@ const UserPost: UserPostsType={
     //@ts-ignore
     wishList: async(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>{ return []},
     //@ts-ignore
-    history: async(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>{ return []}
+    history: async(id: string, movie:{id: number, name: string, genre_ids: Array<any>, poster_path})=>{ return []},
+    //@ts-ignore
+    searchMovie: async(word: string)=>{return []},
 }
 
 
@@ -36,7 +39,6 @@ UserPost.homepage= async(id: string)=>{
         }
     )
     const data2 = await response.json()
-    console.log(response)
     return data2
 }
 
@@ -69,7 +71,6 @@ UserPost.like= async(id: number,  movie:{id: string, name: string, genre_ids: Ar
 
     if(updatedError) throw error
 
-    console.log(updatedData)
 
     return updatedData[0].likes
 }
@@ -101,9 +102,6 @@ UserPost.wishList= async(id: number,  movie:{id: string, name: string, genre_ids
         .select()
 
     if(updatedError) throw error
-
-    console.log(updatedData)
-
     return updatedData[0].likes
 }
 
@@ -134,10 +132,20 @@ UserPost.history= async(id: number,  movie:{id: string, name: string, genre_ids:
         .select()
 
     if(updatedError) throw error
-
-    console.log(updatedData)
-
     return updatedData[0].likes
+}
+
+//@ts-ignore
+UserPost.searchMovie= async(word: string)=>{
+    const response = await fetch(
+        `${Node_Server}/search/${word}`,
+        {
+            method: "GET",
+            headers: header,
+        }
+    )
+    const data2 = await response.json()
+    return data2
 }
 
 

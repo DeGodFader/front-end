@@ -7,13 +7,15 @@ import Categories from '../../../../../Components/MovieCategories/Categories'
 import PageLoader from '../../../../../Components/Loaders/PageLoader'
 import ComingSoon from '../../../../../Components/ComingSoon/ComingSoon'
 import Loader from '../../../../../Components/Loaders/Loader'
+import { GenreMap } from '../../../../../Helpers/constants'
 
 const { Title, Text } = Typography
 
 const All = () => {
 
-  const { trending, loading, categories, popular, discover } = useAppSelector((state)=> state.getResults)
+  const { trending, loading, categories, popular, discover, recommendations } = useAppSelector((state)=> state.getResults)
 
+  const categories_list=["Sci-Fi & Fantasy", "Action & Adventure", "Drama", "Comedy", "Horror", "Romance", "Thriller", "Mystery", "Fantasy", "Animation", "Soap", "Reality", "Documentary"]
 
   return (
     <>
@@ -22,16 +24,15 @@ const All = () => {
         ):(
           <div>
             <Categories title='Trending' movies={trending} clickable />
-            <div>
-              <Title level={3}>{"Recommended"}</Title>
-              <ComingSoon />
-            </div>
-            <div>
-              <Title level={3}>{"Continue Watching"}</Title>
-              <ComingSoon />
-            </div>
+            <Categories title='Recommendations' movies={recommendations} clickable />
             <Categories title='Popular' movies={popular} clickable/>
             <Categories title='Dicover' movies={discover} clickable/>
+            {categories.map((category, index)=>{
+                const Cat=GenreMap.find(genre=> genre.id===category.category && categories_list.includes(genre.name))
+                if(Cat) 
+                  return(<Categories title={Cat.name} movies={category.results} key={index} clickable/>) 
+              }
+            )}
           </div>
         )}
     </>

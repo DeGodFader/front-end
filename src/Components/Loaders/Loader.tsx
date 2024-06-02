@@ -4,13 +4,13 @@ import { createGlobalStyle } from 'styled-components'
 const Loader: React.FC = () => {
   return (
     <div
-        style={{position: "fixed", width:"100dvw",height:"90dvh", display:"flex", alignItems:"center", justifyContent:"center"}}
+        style={{position: "absolute", width:"100%",height:"90dvh", display:"flex", alignItems:"center", justifyContent:"center"}}
     >
         <LoaderStyle />
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 320 315"
-        style={{width: "30dvw", height:"30dvh", opacity: 1, zIndex:9999}}
+        style={{width: "30vw", height:"30vh", opacity: 1, zIndex:9999}}
       >
         <g>
             <g id="color_index_g">

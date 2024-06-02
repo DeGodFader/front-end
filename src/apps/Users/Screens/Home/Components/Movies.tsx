@@ -6,7 +6,7 @@ import Loader from '../../../../../Components/Loaders/Loader'
 
 const Movies = () => {
   const { Tmovies, loading, Dmovies, Pmovies } = useAppSelector((state)=> state.getResults)
-  console.log(Tmovies)
+  const categories_list=["Sci-Fi & Fantasy", "Action & Adventure", "Drama", "Comedy", "Horror", "Romance", "Thriller", "Mystery", "Fantasy", "Animation", "Soap", "Reality", "Documentary"]
   return (
     <>
         {loading?(

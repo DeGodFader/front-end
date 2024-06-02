@@ -19,6 +19,9 @@
     font-weight: normal;
 }
 
+#root{
+  width: 100dvw;
+}
 
 body{
   padding: 0 !important;

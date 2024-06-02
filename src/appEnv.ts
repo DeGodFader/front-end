@@ -10,7 +10,7 @@ export const TMDB_TRENDING_PATH="https://api.themoviedb.org/3/trending/all/day?a
 export const TMDB_POPULAR_MOVIE_PATH="https://api.themoviedb.org/3/movie/popular?api_key="+TMDB_API_KEY
 export const TMDB_POPULAR_SERIES_PATH="https://api.themoviedb.org/3/tv/popular?api_key="+TMDB_API_KEY
 export const TMDB_TRAILER_VIDEO_PATH="https://www.youtube.com/embed"
-export const Node_Server="http://localhost:5107"
+export const Node_Server="http://172.20.10.5:5107"
 export const APP_KEY="ztGGRW5bEXuVodW2E7y57OuHeE58n1C6"
 export const SUPABASE_URL="https://jqgmbwhdterrvfxifrbq.supabase.co"
 export const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxZ21id2hkdGVycnZmeGlmcmJxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNDYxMTYyNywiZXhwIjoyMDMwMTg3NjI3fQ.V-4PZ1HrmQm-CzjRcJONBrdUyFbOr7L8So45c5Izmpo"
