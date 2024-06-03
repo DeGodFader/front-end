@@ -48,7 +48,7 @@ const HomePage = () => {
   return (
     <main style={{padding:"15px 10px", overflowX:"hidden"}}>
         {loading?(
-          <Loader />
+          <Loader loading={loading}/>
         ):(
           <>
           <Row justify={"space-between"} align={"middle"}>

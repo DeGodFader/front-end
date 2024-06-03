@@ -99,8 +99,8 @@ const Wrapper= styled.div`
 `
 const Card=styled(AntCard)`
     display: inline-block;
-    margin-right: 20px; 
-    margin-bottom: 10px;
+    margin-right: 10px; 
+    margin-bottom: 8px;
     background: transparent;
     border: none;
 

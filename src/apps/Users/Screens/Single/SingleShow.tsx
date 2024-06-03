@@ -16,6 +16,7 @@ import CommentSection from '../../../../Components/MovieCategories/CommentSectio
 import Season from './Components/Season'
 import { Tabs2 } from '../../../../Components/Tabs/Tab1'
 import LocalStorage from '../../../../Helpers/storage'
+import ComingSoon from '../../../../Components/ComingSoon/ComingSoon'
 
 const {Title, Text} = Typography
 
@@ -37,7 +38,6 @@ const SingleShow = () => {
     const [listed, setListed]= useState<boolean>(false)
   
     const {tvShow, loading, liked_movies, my_list, watch_history} = useAppSelector((state)=> state.getResults)
-    console.log(tvShow)
   
     useEffect(()=>{
       if (id) {
@@ -186,14 +186,16 @@ const SingleShow = () => {
                   items={tabItems}
                   onChange={() => window.scrollTo({ top: 580, behavior: "smooth" })}
               />
-              <center style={{marginTop:"3rem"}}>
+              <Title level={3}>Watch & Download</Title>
+              <center style={{marginTop:0}}>
                 <Row justify={"space-around"}>
-                  <PrimaryButton>
+                  {/* <PrimaryButton>
                     <Btn type='primary' onClick={watchMovie}>
                       <PlayCircleFilled/>
                       Watch
                     </Btn >
-                  </PrimaryButton>
+                  </PrimaryButton> */}
+                  <ComingSoon />
                   {!listed?(
                     <AppstoreAddOutlined style={{color:"var(--color-secondary-500)", fontSize:42}} onClick={WishListMovie}/>
                   ):(

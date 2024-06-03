@@ -1,10 +1,30 @@
-import React from 'react'
+import { Progress, ProgressProps } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { createGlobalStyle } from 'styled-components'
 
-const Loader: React.FC = () => {
+interface LoadingProp{
+    loading: boolean
+}
+
+const Loader: React.FC<LoadingProp> = ({loading}) => {
+    const [counter, setCounter]= useState<number>(0)
+    const twoColors: ProgressProps['strokeColor'] = {
+        '0%': '#e9f383',
+        '100%': '#2bc6db',
+    };
+    useEffect(()=>{
+        let interval
+        if (counter < 90 && loading) {
+            interval = setInterval(() => {
+                setCounter(prev => (prev < 90 ? prev + 1 : prev));
+            }, 500); 
+          } else if (!loading) {
+            setCounter(100); 
+          }
+    },[loading])
   return (
     <div
-        style={{position: "absolute", width:"100%",height:"90dvh", display:"flex", alignItems:"center", justifyContent:"center"}}
+        style={{position: "absolute", width:"100%",height:"90dvh", display:"flex", alignItems:"center", justifyContent:"center", flexDirection:"column"}}
     >
         <LoaderStyle />
       <svg
@@ -46,6 +66,7 @@ const Loader: React.FC = () => {
             </g>
         </g>
       </svg>
+      <Progress percent={counter} strokeColor={twoColors} showInfo={false} style={{width:"50%"}}/>
     </div>
   )
 }

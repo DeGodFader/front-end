@@ -51,7 +51,7 @@ const Searcher = () => {
         ):(
           <>
             {loading && searching==="On-It"?(
-              <Loader />
+              <Loader loading={loading}/>
             ):(
               <Row justify={'space-between'} style={{marginTop: 40}}>
                 {search.length>1?(

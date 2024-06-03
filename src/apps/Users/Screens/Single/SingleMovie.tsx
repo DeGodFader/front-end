@@ -158,7 +158,7 @@ const SingleMovie = () => {
     <>
       {open&&(<Watch />)}
       {loading?(
-        <Loader />
+        <Loader loading={loading}/>
       ): (
         <> 
           <div>
@@ -242,7 +242,7 @@ const ReotateHolder = styled.div`
 
 const RotatedComponent = styled.div`
   position: relative;
-  right: 55%;
+  right: 45%;
   height: 100%;
   width: 100dvh;
   transform: rotate(90deg);

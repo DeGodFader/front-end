@@ -39,8 +39,7 @@ const Season: React.FC<SeasonType> = ({data}) => {
             <Text>{data.episode_count} Episodes </Text>
             {data.air_date? <Text>{ dayjs(data.air_date).format("YYYY")}</Text>: null}
         </Row>
-        <Title level={3}>Watch & Download</Title>
-        <ComingSoon />
+        
     </div>
   )
 }
