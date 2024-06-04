@@ -20,7 +20,6 @@ interface SeasonType {
 }
 
 const Season: React.FC<SeasonType> = ({data}) => {
-    console.log(data)
     const [expandedComments, setExpandedComments] = useState<boolean>(false);
   
     const toggleText = () => {

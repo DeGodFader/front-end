@@ -17,9 +17,16 @@ const APP_MAP={
 
 function App() {
   const [currentApp, setCurrentApp] = useState(<AppLoader />)
+  let count=0
   useEffect(() => {
     const app = LocalStorage.getApp() as Apptypes
-    setCurrentApp(APP_MAP[app])
+    if(app==='auth'){
+      setTimeout(() => {
+        setCurrentApp(APP_MAP[app])
+      }, 3500);
+    }else{
+      setCurrentApp(APP_MAP[app])
+    }
 
     window.document.title = `${app.toUpperCase()} - KinoVerse`
     document.addEventListener("changeapp", () => {

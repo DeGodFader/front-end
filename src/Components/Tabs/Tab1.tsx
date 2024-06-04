@@ -66,7 +66,7 @@ export const Tabs = styled(AntTabs)`
     }
 
     .ant-tabs-content-holder{
-        padding:0
+        padding: 0;
     }
   }
 `

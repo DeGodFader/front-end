@@ -8,9 +8,6 @@ import LandingPage from './Screens/LandingPage';
 
 
 const App= ()=>{
-    useEffect(()=>{
-
-    },[])
     return (
       <Router>
         <Routes>

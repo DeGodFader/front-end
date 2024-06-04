@@ -33,10 +33,7 @@ AuthPost.login= async(userName: string, password: string)=>{
         }   
     )
 
-    console.log()
-
     const data= await response.json()
-    console.log(data)
     return data
 }
 

@@ -1,7 +1,7 @@
 import { SearchOutlined } from '@ant-design/icons'
 import { Col, Form, Input, Row, Space, Typography, Card as AntCard } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import LocalStorage from '../../../../Helpers/storage'
 import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync, searchMovieAsync } from '../../State/thunks/resultThunk'

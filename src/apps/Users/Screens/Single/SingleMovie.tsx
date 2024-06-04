@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import { fetchMovieAsync, likeMovieAsync, watchMovieAsync, wishListMovieAsync } from '../../State/thunks/resultThunk'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 import PageLoader from '../../../../Components/Loaders/PageLoader'
 import { TMDB_IMAGE_BASE_PATH, TMDB_TRAILER_VIDEO_PATH } from '../../../../appEnv'
 import { AppstoreAddOutlined, CheckOutlined, CloseOutlined, DownloadOutlined, FileAddOutlined, FileDoneOutlined, HeartFilled, HeartOutlined, LeftCircleOutlined, MoreOutlined, PlayCircleFilled, StarFilled } from '@ant-design/icons'
@@ -37,7 +37,6 @@ const SingleMovie = () => {
   const [open, setOpen]= useState<boolean>(false)
 
   const {movie, loading, liked_movies, my_list, watch_history} = useAppSelector((state)=> state.getResults)
-  console.log(movie)
 
   useEffect(()=>{
     if (id) {
@@ -133,7 +132,6 @@ const SingleMovie = () => {
     }
   }
 
-  console.log()
 
   const Watch=()=>{
     return(

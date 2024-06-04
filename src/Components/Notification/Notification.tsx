@@ -7,10 +7,8 @@ const Notification = () => {
   // const countRef = React.useRef(0)
 
   useEffect(() => {
-    // console.log("EFFECT RUNNING", countRef.current++)
     document.addEventListener("notify", (e: any) => {
       const notif = e.detail
-      console.log(notif)
       api[notif.type.toLowerCase()]({ ...notif, message: notif.message, duration: notif.duration })
     })
 

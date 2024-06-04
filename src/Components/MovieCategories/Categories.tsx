@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { TMDB_IMAGE_BASE_PATH, TMDB_TRAILER_VIDEO_PATH } from '../../appEnv'
 import { Trending } from '../../apps/Users/State/reducers/resultReducer'
 import { GenreMap } from '../../Helpers/constants'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 
 const { Title, Text } = Typography

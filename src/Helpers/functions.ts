@@ -18,7 +18,6 @@ type notifProps = {
 
 export const logout = async () => {
   const response= await AuthPost.logout()
-  console.log(LocalStorage.getAccessToken())
   if(response.done=="1"){
     LocalStorage.removeCurrentUser()
     LocalStorage.storeApp("auth")
@@ -48,7 +47,6 @@ export function notify({ type, message, duration, context }: notifProps) {
     }
   }
   if (type === "SUCCESS") {
-    // console.log("CONTEXT", context)
     if (["get", "put"].includes(context?.config?.method)) {
       return
     }

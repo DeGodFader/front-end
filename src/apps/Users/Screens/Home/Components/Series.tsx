@@ -6,11 +6,10 @@ import Loader from '../../../../../Components/Loaders/Loader'
 
 const Series = () => {
   const { Ttv_shows, loading, Ptv_shows, Dtv_shows } = useAppSelector((state)=> state.getResults)
-  console.log(Ttv_shows, Ptv_shows, Dtv_shows)
   return (
     <>
         {loading?(
-          <Loader />
+          <Loader loading={loading}/>
         ):(
           <div>
             <Categories title='Trending' movies={Ttv_shows} clickable />

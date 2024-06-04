@@ -1,7 +1,7 @@
 import { Button, Card, Flex, Form, Input, Row, Space, Typography } from 'antd'
 import { PrimaryButton } from '../../../Components/Buttons/Buttons'
 import { AppleFilled, FacebookFilled, GoogleCircleFilled, GoogleOutlined, KeyOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import FormItem from 'antd/es/form/FormItem'
 import { useState } from 'react'
 import LocalStorage from '../../../Helpers/storage'
@@ -23,10 +23,8 @@ const SignIn = () => {
   }
 
   const Login= async()=>{
-    console.log("Here")
     setLoading(true)
     const response= await AuthPost.login(formData.username, formData.password)
-    console.log(response)
     setLoading(false)
     if(response.id){
       LocalStorage.storeApp("users")

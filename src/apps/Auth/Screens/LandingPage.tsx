@@ -1,27 +1,12 @@
-import { Button, Flex, Row, Space, Typography } from 'antd'
-import React, { useEffect } from 'react'
-
+import { Button, Row, Space, Typography } from 'antd'
 import { PrimaryButton } from '../../../Components/Buttons/Buttons'
 import { AppleFilled, FacebookFilled, GoogleCircleFilled, GoogleOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router'
-import { Node_Server } from '../../../appEnv'
+import { useNavigate } from 'react-router-dom'
 
 const { Title, Text} = Typography
 
 const LandingPage = () => {
-    const navigate= useNavigate()
-    // useEffect(()=>{
-    //     const response=  fetch(
-    //         `${Node_Server}/health`,
-    //         {
-    //             method: "GET",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //         }
-    //     )
-    //     console.log(response)
-    // },[])
+  const navigate= useNavigate()
   return (
     <Space direction="vertical" align="center" style={{width:"100dvw", gap:10}}>
         <Title style={{fontSize:'5dvh'}}>KinoVerse</Title>

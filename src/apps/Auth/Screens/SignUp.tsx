@@ -1,7 +1,7 @@
 import { Button, Card, Checkbox, Flex, Form, Input, Row, Space, Typography } from 'antd'
 import { PrimaryButton } from '../../../Components/Buttons/Buttons'
 import { AppleFilled, FacebookFilled, GoogleCircleFilled, GoogleOutlined, KeyOutlined, LockOutlined, MailOutlined, UnlockOutlined, UserOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import Password from 'antd/es/input/Password'
 import FormItem from 'antd/es/form/FormItem'
 import { useState } from 'react'

@@ -9,7 +9,7 @@ import Series from './Components/Series'
 import { useAppDispatch, useAppSelector } from '../../State/hooks'
 import { fetchDiscoverAsync, fetchPopularMoviesAsync, fetchTrendingAsync, homePageAsync } from '../../State/thunks/resultThunk'
 import { setFullArray } from '../../State/reducers/resultReducer'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import Loader from '../../../../Components/Loaders/Loader'
 
 const { Text, Title }= Typography

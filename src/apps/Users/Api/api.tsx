@@ -45,7 +45,6 @@ UserPost.homepage= async(id: string)=>{
 
 //@ts-ignore
 UserPost.like= async(id: number,  movie:{id: string, name: string, genre_ids: Array<any>, poster_path: string})=>{
-    console.log("Here")
     const { data, error}= await supabase
         .from('users')
         .select('likes')
@@ -77,7 +76,6 @@ UserPost.like= async(id: number,  movie:{id: string, name: string, genre_ids: Ar
 
 //@ts-ignore
 UserPost.wishList= async(id: number,  movie:{id: string, name: string, genre_ids: Array<any>, poster_path: string})=>{
-    console.log("Here")
     const { data, error}= await supabase
         .from('users')
         .select('watch_list')
@@ -107,7 +105,6 @@ UserPost.wishList= async(id: number,  movie:{id: string, name: string, genre_ids
 
 //@ts-ignore
 UserPost.history= async(id: number,  movie:{id: string, name: string, genre_ids: Array<any>, poster_path: string})=>{
-    console.log("Here")
     const { data, error}= await supabase
         .from('users')
         .select('history')
